@@ -1,1 +1,0 @@
-Neste trabalho em equipe, utilizando HTML, CSS e JavaScript para criar um jogo da velha funcional. Desenvolvido utilizando conceitos de Programação Orientada a Objetos (POO) em JavaScript, com foco na estruturação do código em classes como Jogador, Jogo da Velha e Jogada.
