@@ -9,7 +9,23 @@
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
+
     <section>
+        <div>
+            <label for="player1">Jogador 1: </label>
+            <input type="text" id="player1" placeholder="Nome do Jogador 1">
+        </div>
+        <div>
+            <label for="player2">Jogador 2: </label>
+            <input type="text" id="player2" placeholder="Nome do Jogador 2">
+        </div>
+        <button onclick="startGame()">Iniciar Jogo</button>
+    
+        <div class="status"></div>
+        <div class="score">
+            <p id="scorePlayer1">Jogador 1: 0</p>
+            <p id="scorePlayer2">Jogador 2: 0</p>
+        </div>
         <div class="titulo">         
            Jogo da Velha<br>
            <span>E</span>
@@ -33,6 +49,7 @@
             <div data-cell-index="7" class="cell"></div>
             <div data-cell-index="8" class="cell"></div>
         </div>
+        <button onclick="showRanking()">Ver Ranking</button>
         <h3 class="status"></h3>
         <button class="reiniciar">Recomeçar Jogo</button>
     </section>
