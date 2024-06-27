@@ -152,6 +152,7 @@ button:hover {
     align-items: center;
     display: flex;
     justify-content: center;
+    max-width: 33.3vh;
     margin: auto;
 
 }
