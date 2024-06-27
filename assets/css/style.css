@@ -2,16 +2,13 @@
 body {
     font-family: "Poppins", sans-serif;
     background-color: #02421d;
+    background-image: url(../imgs/Background.jpg); /* Background so para não ficar com a cor forte enquanto no olho enqt edita */
+    position: relative;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover   
 }
-section {
-    text-align: center;
-    border-radius: 10px;
-    width: 400px;
-    margin: auto;
-    background-color: #fff;
-    margin-top: 75px;
-    box-shadow: 0px 10px 36px 16px rgba(0,0,0,0.1);
-}
+
 .titulo {
     padding-top: 20px;
 }
@@ -78,7 +75,7 @@ button:hover {
 }
 .titulo {
     font-size: 2.5rem;
-    padding-top: 30px;
+    padding-top: 5px;
 
 }
 
@@ -135,4 +132,39 @@ button:hover {
 
 .titulo > span:nth-child(10){
     animation-delay: 2.25s; 
+}
+
+.container {
+    text-align: center;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: auto;
+    background-color: #fff;
+    margin-top: 75px;
+    box-shadow: 0px 10px 36px 16px rgba(0,0,0,0.1);
+    padding: 10px;
+    border: 1px solid black;
+}
+
+
+
+.pure-u-md-1-3 {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    max-width: 33.3vh;
+    margin: auto;
+
+}
+
+@media (max-width: 768px) {
+    .pure-g {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pure-u-md-1-3 {
+        width: 100%;
+    }
+
 }
