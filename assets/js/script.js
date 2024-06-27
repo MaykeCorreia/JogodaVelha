@@ -11,8 +11,7 @@ const winningMessage = () => `${currentPlayer === "X" ? player1Name : player2Nam
 const drawMessage = () => `Jogo Acabou em Empate!`;
 const currentPlayerTurn = () => `É a vez de ${currentPlayer === "X" ? player1Name : player2Name}`;
 
-document.querySelector('#scorePlayer1').innerText = `Jogador 1 (${player1Name}): ${player1Score}`;
-document.querySelector('#scorePlayer2').innerText = `Jogador 2 (${player2Name}): ${player2Score}`;
+updateScoreDisplay();
 
 document.querySelectorAll('.cell').forEach(cell => cell.addEventListener('click', handleCellClick));
 document.querySelector('.reiniciar').addEventListener('click', handleRestartGame);
@@ -21,18 +20,48 @@ function startGame() {
     player1Name = document.querySelector('#player1').value || "Jogador 1";
     player2Name = document.querySelector('#player2').value || "Jogador 2";
     statusDisplay.innerHTML = currentPlayerTurn();
-    document.querySelector('#scorePlayer1').innerText = `Jogador 1 (${player1Name}): ${player1Score}`;
-    document.querySelector('#scorePlayer2').innerText = `Jogador 2 (${player2Name}): ${player2Score}`;
+    updateScoreDisplay();
+    addPlayersToRanking();
+}
+
+function addPlayersToRanking() {
+    let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
+    updateRankingTable(player1Name, ranking);
+    updateRankingTable(player2Name, ranking);
+}
+
+function updateRankingTable(playerName, ranking) {
+    let player = ranking.find(p => p.name === playerName);
+    if (!player) {
+        player = { name: playerName, victories: 0, defeats: 0 };
+        ranking.push(player);
+    }
+    localStorage.setItem('ranking', JSON.stringify(ranking));
+    renderRankingTable();
+}
+
+function renderRankingTable() {
+    const rankingTable = document.querySelector('#rankingTable tbody');
+    rankingTable.innerHTML = '';
+    let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
+    ranking.forEach((player, index) => {
+        rankingTable.innerHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${player.name}</td>
+                <td>${player.victories}</td>
+                <td>${player.defeats}</td>
+            </tr>
+        `;
+    });
 }
 
 function handleCellClick(clickedCellEvent) {
     const clickedCell = clickedCellEvent.target;
     const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell-index'));
-
     if (gameState[clickedCellIndex] !== "" || !gameActive) {
         return;
     }
-
     handleCellPlayed(clickedCell, clickedCellIndex);
     handleResultValidation();
 }
@@ -75,14 +104,12 @@ function handleResultValidation() {
         gameActive = false;
         return;
     }
-
     let roundDraw = !gameState.includes("");
     if (roundDraw) {
         statusDisplay.innerHTML = drawMessage();
         gameActive = false;
         return;
     }
-
     handlePlayerChange();
 }
 
@@ -107,31 +134,28 @@ function updateScore() {
         player2Score++;
         localStorage.setItem('player2Score', player2Score);
     }
+    updateScoreDisplay();
+}
+
+function updateScoreDisplay() {
     document.querySelector('#scorePlayer1').innerText = `Jogador 1 (${player1Name}): ${player1Score}`;
     document.querySelector('#scorePlayer2').innerText = `Jogador 2 (${player2Name}): ${player2Score}`;
 }
 
 function saveToRanking(winnerName) {
     let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-    ranking.push({ name: winnerName, score: currentPlayer === "X" ? player1Score : player2Score });
+    let winner = ranking.find(player => player.name === winnerName);
+    let loser = ranking.find(player => player.name !== winnerName && (player.name === player1Name || player.name === player2Name));
+    if (winner) {
+        winner.victories++;
+    }
+    if (loser) {
+        loser.defeats++;
+    }
     localStorage.setItem('ranking', JSON.stringify(ranking));
+    renderRankingTable();
 }
 
-function showRanking() {
-    const rankingModal = document.getElementById('rankingModal');
-    const rankingDisplay = document.getElementById('ranking');
-    let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-    
-    ranking.sort((a, b) => b.score - a.score);
-
-    rankingDisplay.innerHTML = '';
-    ranking.forEach((player, index) => {
-        rankingDisplay.innerHTML += `<p>${index + 1}. ${player.name}: ${player.score}</p>`;
-    });
-
-    rankingModal.style.display = "block";
-}
-
-function closeModal() {
-    document.getElementById('rankingModal').style.display = "none";
-}
+document.addEventListener('DOMContentLoaded', () => {
+    renderRankingTable();
+});
