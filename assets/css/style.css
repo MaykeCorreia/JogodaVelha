@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 body {
     font-family: "Poppins", sans-serif;
-    background-color: #02421d;
+    background-color: #033e1b;
     background-image: url(../imgs/Background.jpg); /* Background so para não ficar com a cor forte enquanto no olho enqt edita */
     position: relative;
     background-repeat: no-repeat;
