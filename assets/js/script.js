@@ -45,7 +45,7 @@ function renderRankingTable() {
     rankingTable.innerHTML = '';
     let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
     ranking.forEach((player, index) => {
-        rankingTable.innerHTML += `
+        rankingTable.innerHTML +=  `
             <tr>
                 <td>${index + 1}</td>
                 <td>${player.name}</td>
