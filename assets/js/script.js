@@ -62,6 +62,7 @@ function renderRankingTable() {
     const rankingTable = document.querySelector('#rankingTable tbody');
     rankingTable.innerHTML = '';
     let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
+    ranking.sort((a, b) => b.victories - a.victories);
     ranking.forEach((player, index) => {
         rankingTable.innerHTML +=  `
             <tr>
