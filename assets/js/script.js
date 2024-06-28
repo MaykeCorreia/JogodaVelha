@@ -138,8 +138,8 @@ function updateScore() {
 }
 
 function updateScoreDisplay() {
-    document.querySelector('#scorePlayer1').innerText = `Jogador 1 (${player1Name}): ${player1Score}`;
-    document.querySelector('#scorePlayer2').innerText = `Jogador 2 (${player2Name}): ${player2Score}`;
+    document.querySelector('#scorePlayer1').innerText = `Jogador 1 (${player1Name})`;
+    document.querySelector('#scorePlayer2').innerText = `Jogador 2 (${player2Name})`;
 }
 
 function saveToRanking(winnerName) {
