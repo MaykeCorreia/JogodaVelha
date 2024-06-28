@@ -1,15 +1,34 @@
+class Player {
+    constructor(name) {
+        this.name = name;
+        this.score = 0;
+        this.victories = 0;
+        this.defeats = 0;
+    }
+
+    updateScore(points) {
+        this.score += points;
+    }
+
+    addVictory() {
+        this.victories++;
+    }
+
+    addDefeat() {
+        this.defeats++;
+    }
+}
+
 const statusDisplay = document.querySelector('.status');
 let gameActive = true;
 let currentPlayer = "X";
-let player1Name = "";
-let player2Name = "";
-let player1Score = localStorage.getItem('player1Score') ? parseInt(localStorage.getItem('player1Score')) : 0;
-let player2Score = localStorage.getItem('player2Score') ? parseInt(localStorage.getItem('player2Score')) : 0;
+let player1 = new Player("Jogador 1");
+let player2 = new Player("Jogador 2");
 let gameState = ["", "", "", "", "", "", "", "", ""];
 
-const winningMessage = () => `${currentPlayer === "X" ? player1Name : player2Name} Ganhou!`;
+const winningMessage = () => `${currentPlayer === "X" ? player1.name : player2.name} Ganhou!`;
 const drawMessage = () => `Jogo Acabou em Empate!`;
-const currentPlayerTurn = () => `É a vez de ${currentPlayer === "X" ? player1Name : player2Name}`;
+const currentPlayerTurn = () => `É a vez de ${currentPlayer === "X" ? player1.name : player2.name}`;
 
 updateScoreDisplay();
 
@@ -17,8 +36,8 @@ document.querySelectorAll('.cell').forEach(cell => cell.addEventListener('click'
 document.querySelector('.reiniciar').addEventListener('click', handleRestartGame);
 
 function startGame() {
-    player1Name = document.querySelector('#player1').value || "Jogador 1";
-    player2Name = document.querySelector('#player2').value || "Jogador 2";
+    player1.name = document.querySelector('#player1').value || "Jogador 1";
+    player2.name = document.querySelector('#player2').value || "Jogador 2";
     statusDisplay.innerHTML = currentPlayerTurn();
     updateScoreDisplay();
     addPlayersToRanking();
@@ -26,14 +45,13 @@ function startGame() {
 
 function addPlayersToRanking() {
     let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-    updateRankingTable(player1Name, ranking);
-    updateRankingTable(player2Name, ranking);
+    updateRankingTable(player1, ranking);
+    updateRankingTable(player2, ranking);
 }
 
-function updateRankingTable(playerName, ranking) {
-    let player = ranking.find(p => p.name === playerName);
-    if (!player) {
-        player = { name: playerName, victories: 0, defeats: 0 };
+function updateRankingTable(player, ranking) {
+    let existingPlayer = ranking.find(p => p.name === player.name);
+    if (!existingPlayer) {
         ranking.push(player);
     }
     localStorage.setItem('ranking', JSON.stringify(ranking));
@@ -99,8 +117,8 @@ function handleResultValidation() {
     }
     if (roundWon) {
         statusDisplay.innerHTML = winningMessage();
-        updateScore();
-        saveToRanking(currentPlayer === "X" ? player1Name : player2Name);
+        currentPlayer === "X" ? player1.addVictory() : player2.addVictory();
+        saveToRanking(currentPlayer === "X" ? player1 : player2);
         gameActive = false;
         return;
     }
@@ -127,31 +145,32 @@ function handleRestartGame() {
 }
 
 function updateScore() {
-    if (currentPlayer === "X") {
-        player1Score++;
-        localStorage.setItem('player1Score', player1Score);
-    } else {
-        player2Score++;
-        localStorage.setItem('player2Score', player2Score);
-    }
+    currentPlayer === "X" ? player1.updateScore(1) : player2.updateScore(1);
     updateScoreDisplay();
 }
 
 function updateScoreDisplay() {
-    document.querySelector('#scorePlayer1').innerText = `Jogador 1 (${player1Name})`;
-    document.querySelector('#scorePlayer2').innerText = `Jogador 2 (${player2Name})`;
+    document.querySelector('#scorePlayer1').innerText = `Jogador 1 (${player1.name})`;
+    document.querySelector('#scorePlayer2').innerText = `Jogador 2 (${player2.name})`;
 }
 
-function saveToRanking(winnerName) {
+function saveToRanking(winner) {
     let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-    let winner = ranking.find(player => player.name === winnerName);
-    let loser = ranking.find(player => player.name !== winnerName && (player.name === player1Name || player.name === player2Name));
-    if (winner) {
-        winner.victories++;
+
+    let winnerInRanking = ranking.find(player => player.name === winner.name);
+    if (winnerInRanking) {
+        winnerInRanking.victories++;
+    } else {
+        ranking.push({ name: winner.name, victories: 1, defeats: 0 });
     }
-    if (loser) {
-        loser.defeats++;
+    let loserName = currentPlayer === "X" ? player2.name : player1.name;
+    let loserInRanking = ranking.find(player => player.name === loserName);
+    if (loserInRanking) {
+        loserInRanking.defeats++;
+    } else {
+        ranking.push({ name: loserName, victories: 0, defeats: 1 });
     }
+
     localStorage.setItem('ranking', JSON.stringify(ranking));
     renderRankingTable();
 }
